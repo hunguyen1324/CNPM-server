@@ -3,10 +3,10 @@ from flask_jwt_extended import get_jwt_identity
 class Users(db.Model):
     id = db.Column(db.Integer,primary_key = True)
     email = db.Column(db.String(50),nullable = False)
-    username = db.Column(db.String(20),nullable = False)
+    username = db.Column(db.String(100),nullable = False)
     password = db.Column(db.String(20),nullable = False) 
     address= db.Column(db.String(50),nullable = False)
-    phone= db.Column(db.Integer,nullable = False)
+    phone= db.Column(db.String(50),nullable = False)
 
     def __init__(self, email,username, password,address,phone):
         self.email = email    
@@ -18,7 +18,7 @@ class Users(db.Model):
 class Admin(db.Model):
     id = db.Column(db.Integer,primary_key = True)
     email = db.Column(db.String(50),nullable = False)
-    adminname = db.Column(db.String(20),nullable = False)
+    adminname = db.Column(db.String(100),nullable = False)
     password = db.Column(db.String(20),nullable = False) 
 
     def __init__(self, email,adminname, password):
@@ -43,7 +43,7 @@ class Total_price(db.Model):
 
 class Feedback_data(db.Model):
     id = db.Column(db.Integer, primary_key = True)
-    phone_fb = db.Column(db.Integer,nullable = False)
+    phone_fb = db.Column(db.String(50),nullable = False)
     email_fb = db.Column(db.String(50),nullable = False)
     user_fb = db.Column(db.String(50),nullable = False)
     mess_fb = db.Column(db.String(500),nullable = False)
@@ -56,7 +56,7 @@ class Feedback_data(db.Model):
 
 class Customer_data(db.Model):
     id = db.Column(db.Integer, primary_key = True)
-    phone_ct= db.Column(db.Integer,nullable = False)
+    phone_ct= db.Column(db.String(50),nullable = False)
     email_ct= db.Column(db.String(50),nullable = False)
     user_ct= db.Column(db.String(50),nullable = False)
     mess_ct= db.Column(db.String(500),nullable = False)

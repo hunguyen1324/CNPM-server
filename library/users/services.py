@@ -83,7 +83,7 @@ def login():
     if login_method == 'token':
         # Tạo JWT token
         access_token = create_access_token(identity=user.id)
-        return {'username': user.username ,'id':user.id,'address':user.address,
+        return {'username': user.username ,'password':user.password,'id':user.id,'address':user.address,
                 'phone':user.phone, 'access_token': access_token}, 200
     elif login_method == 'session':
         session['id'] = user.id
@@ -110,9 +110,11 @@ def add_user_service():
         email = data['email']
         username = data['username']
         password = data['password']
+        phone =data['phone']
+        address=data['address']
 
         try :
-            new_user = Users(email,username,password)
+            new_user = Users(email,username,password,phone,address)
             db.session.add(new_user)
             db.session.commit()
             return jsonify({"message" : "Add sucess!"}),200
@@ -145,6 +147,8 @@ def update_user_by_id_service(id):
             try:
                 user.username = data["username"]
                 user.password = data["password"]
+                user.phone =data["phone"]
+                user.address=data["address"]
                 db.session.commit()
                 return "user Updated"
             except IndentationError:
