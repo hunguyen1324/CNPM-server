@@ -4,10 +4,12 @@ from flask import request, jsonify, json,session
 from library.model import Users
 from werkzeug.security import check_password_hash,generate_password_hash
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt, unset_jwt_cookies
-
+import bcrypt
 users_schema = UserSchema(many=True)
 user_schema = UserSchema()
 
+def hash_password(password):
+    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
 
 def register():
@@ -15,54 +17,29 @@ def register():
     email = data['email']
     password = data['password']
     username = data['username']
-    address= data['address']
-    phone= data['phone']
+    address = data['address']
+    phone = data['phone']
     if not email or not password or not username: 
-        return {'message' : 'email,password,username are required'},400
+        return {'message': 'email, password, username are required'}, 400
     
-    user = Users.query.filter_by(email = email ).first()
-
-    if user : 
-        return {'message' : 'email already exits'},400
+    # Kiểm tra xem email đã tồn tại chưa
+    user = Users.query.filter_by(email=email).first()
+    if user: 
+        return {'message': 'email already exists'}, 400
     
-  #  password_hash = generate_password_hash(password)
-    user = Users(email=email,username = username,password=password,address=address,phone=phone)
+    # Mã hóa mật khẩu
+    hashed_password = hash_password(password)
 
+    # Tạo đối tượng user mới với mật khẩu đã mã hóa
+    user = Users(email=email, username=username, password=hashed_password, address=address, phone=phone)
+
+    # Lưu đối tượng user vào database
     db.session.add(user)
     db.session.commit()
-    return{'message' : 'user created successfully'}
+    return {'message': 'user created successfully'}
 
-
-# def login():
-#     data = request.json
-#     email = data.get('email')
-#     password = data.get('password')
-    
-#     if not email or not password:
-#         return {'message': 'email and password are required'}, 400
-
-#     user = Users.query.filter_by(email=email).first()
-
-#     if not user:
-#         return {'message': 'invalid email or password'}, 401
-
-#     if not check_password_hash(user.password, password):
-#         return {'message': 'invalid email or password'}, 401
-
-#     # Check if the user wants a token or session-based login
-#     login_method = data.get('login_method', 'token')
-    
-#     if login_method == 'token':
-#         # Tạo JWT token
-#         access_token = create_access_token(identity=user.id)
-#         return {'message': user.username + '  Login success', 'access_token': access_token}, 200
-#     elif login_method == 'session':
-#         session['id'] = user.id
-#         session['username'] = user.username
-#         return {'message': user.username + '  Login success'}, 200
-#     else:
-#         return {'message': 'Invalid login method'}, 400
-
+def check_password(hashed_password, password):
+    return bcrypt.checkpw(password.encode('utf-8'), hashed_password)
 def login():
     data = request.json
     email = data.get('email')
@@ -74,9 +51,7 @@ def login():
 
     if not user:
         return {'message': 'invalid email or password'}, 401
-
-    passhash = generate_password_hash(user.password)
-    if not check_password_hash(passhash, password):
+    if not check_password(user.password.encode('utf-8'), password):
         return {'message': 'invalid email or password'}, 401
     login_method = data.get('login_method', 'token')
     

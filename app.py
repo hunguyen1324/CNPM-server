@@ -18,7 +18,7 @@ mysql = MySQL(app)
 jwt = JWTManager(app)
 CORS(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/cnpm'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/mydb'
 app.config['SECRET_KEY'] = 'my-secret-key'
 app.config['JWT_SECRET_KEY'] = 'my-jwt-secret-key'
 db.init_app(app)

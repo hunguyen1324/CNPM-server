@@ -1,4 +1,4 @@
-@set "VIRTUAL_ENV=D:\cnpm_new\CNPM-server\myenv"
+@set "VIRTUAL_ENV=D:\monhoc\restfullapi\CNPM\CNPM-server\myenv"
 
 @set "VIRTUAL_ENV_PROMPT="
 @if NOT DEFINED VIRTUAL_ENV_PROMPT (
